@@ -2,7 +2,6 @@ const prisma = require('../prisma/client');
 
 async function getMealPlan() {
   const mealPlans = await prisma.MealPlan.findMany();
-  console.log(mealPlans);
   return mealPlans;
 };
 

@@ -1,7 +1,7 @@
 const prisma = require('../prisma/client');
 
 async function addTestimonial({ name, message, rating, userId }) {
-  const testimonial = await prisma.testimonial.create({
+  const testimonial = await prisma.Testimonial.create({
     data: {
       name,
       message,
@@ -13,7 +13,7 @@ async function addTestimonial({ name, message, rating, userId }) {
 } 
 
 async function fetchTestimonials() {
-  const testimonials = await prisma.testimonial.findMany();
+  const testimonials = await prisma.Testimonial.findMany();
   return testimonials;
 }
 
