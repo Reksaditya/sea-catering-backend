@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
@@ -15,37 +9,66 @@ datasource db {
 }
 
 model MealPlan {
-  id          Int     @id @default(autoincrement())
-  name        String
-  price       Int
-  description String
-  imageUrl    String?
+  id           Int            @id @default(autoincrement())
+  name         String
+  price        Int
+  description  String
+  imageUrl     String?
+  Subscription Subscription[]
 }
 
 model Subscription {
-  id          Int       @id @default(autoincrement())
-  email       String 
-  meal        String
-  DeliveryDay String[]
-  Allergic    String?
-  CreatedAt   DateTime  @default(now())
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  user         User           @relation(fields: [userId], references: [id])
+  fullName     String
+  phoneNumber  String
+  domicile     String
+  planId       Int
+  plan         MealPlan       @relation(fields: [planId], references: [id])
+  allergies    String?
+  deliveryDays DeliveryDays[]
+  isCancelled  Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  mealTypes    MealTypes[]
+}
+
+enum MealTypes {
+  Breakfast
+  Lunch
+  Dinner
+  Snack
+}
+
+enum DeliveryDays {
+  Sun
+  Mon
+  Tue
+  Wed
+  Thu
+  Fri
+  Sat
 }
 
 model Testimonial {
-  id         Int      @id @default(autoincrement())
-  name       String
-  message    String
-  rating     Int
-  createdAt  DateTime @default(now())
-
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  name      String
+  message   String
+  rating    Int
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id          Int             @id @default(autoincrement())
-  email       String          @unique
-  name        String
-  password    String
-  testimonial Testimonial[]
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  name         String
+  password     String
+  avatarUrl    String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  testimonial  Testimonial[]
+  Subscription Subscription[]
 }

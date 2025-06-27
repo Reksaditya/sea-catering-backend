@@ -30,7 +30,11 @@ async function loginUser(req, res) {
 
     const { password: _, ...safeUser } = user;
 
-    res.status(200).json('Login successfuly', { user: safeUser, token });
+    res.status(200).json({
+      user: safeUser, 
+      message: 'Login successful',
+      token: token,
+    });
   } catch (error) {
     console.error('Login Error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -38,10 +42,10 @@ async function loginUser(req, res) {
 }
 
 async function registerUser(req, res) {
-  const { name, email, password } = req.body;
+  const { name, email, password, avatarUrl } = req.body;
 
   try {
-    const user = await createUser({ name, email, password });
+    const user = await createUser({ name, email, password, avatarUrl });
     res.status(201).json('user successfully created', user);
   } catch (error) {
     if (error.code === "P2002" && error.meta.target.includes("email")) {
