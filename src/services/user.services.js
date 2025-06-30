@@ -26,8 +26,21 @@ async function findUserByEmail(email) {
   });
 }
 
+
 async function verifyPassword(inputPassword, hashedPassword) {
   return await bcrypt.compare(inputPassword, hashedPassword);
+}
+async function findUserById(id) {
+  return await prisma.User.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      avatarUrl: true,
+    }
+  });
 }
 
 async function getUser() {
@@ -35,9 +48,24 @@ async function getUser() {
   return user;
 }
 
-async function deleteUserById() {
+async function deleteUserById(id) {
   const user = await prisma.User.findUnique({ where: { id } });
   return user;
 }
 
-module.exports = { createUser, getUser, deleteUserById, findUserByEmail, verifyPassword };
+async function updateUserById(userId, updateData) {
+  return await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+  });
+}
+
+module.exports = { 
+  createUser, 
+  getUser, 
+  deleteUserById, 
+  findUserByEmail, 
+  findUserById,
+  verifyPassword, 
+  updateUserById 
+};

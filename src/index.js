@@ -4,10 +4,19 @@ const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 3001;
 
+const cron = require('node-cron');
+const checkAndMarkExpiredSubscriptions = require('./jobs/checkexpiredsubscription');
+
+
 const mealPlanRoutes = require('./routes/mealplan.routes');
 const testimonialRoutes = require('./routes/testimonial.routes');
 const userRoutes = require('./routes/user.routes');
 const subscriptionRoutes = require('./routes/subscription.routes');
+
+cron.schedule('0 0 * * *', async () => {
+  console.log("Running subscription expiry check...");
+  await checkAndMarkExpiredSubscriptions();
+});
 
 app.use(cors(
   {

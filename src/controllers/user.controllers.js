@@ -3,7 +3,9 @@ const {
   getUser, 
   deleteUserById, 
   findUserByEmail, 
-  verifyPassword 
+  findUserById,
+  verifyPassword,
+  updateUserById
 } = require("../services/user.services");
 const jwt = require("jsonwebtoken");
 
@@ -25,7 +27,7 @@ async function loginUser(req, res) {
     const token = jwt.sign(
       { id: user.id, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '1d' }
     );
 
     const { password: _, ...safeUser } = user;
@@ -43,7 +45,7 @@ async function loginUser(req, res) {
 
 async function registerUser(req, res) {
   const { name, email, password, avatarUrl } = req.body;
-
+  
   try {
     const user = await createUser({ name, email, password, avatarUrl });
     res.status(201).json('user successfully created', user);
@@ -60,10 +62,57 @@ async function getAllUsers(req, res) {
   res.json(users);
 }
 
+async function getUserId(req, res) {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const user = await findUserById(req.user.id);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json(user);
+}
+
 async function deleteUser(req, res) {
   const { id } = req.body;
   const user = await deleteUserById(id);
   res.json(user);
 }
 
-module.exports = { loginUser, registerUser, getAllUsers, deleteUser };
+async function updateUser(req, res) {
+  const userId = req.user.id; 
+  const { name, email, phone } = req.body;
+
+  try {
+    const user = await updateUserById(userId, { name, email, phone });
+    res.json(user);
+  } catch (err) {
+    res.status(400).json({ error: 'Failed to update profile' });
+  }
+}
+
+async function fetchSubscriptions(req, res) {
+  const userId = req.user.id; 
+  const { status } = req.query;
+
+  try {
+    const subscriptions = await getUserSubscriptions(userId, status);
+    res.json(subscriptions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch subscriptions' });
+  }
+}
+
+
+module.exports = { 
+  loginUser, 
+  registerUser, 
+  getAllUsers, 
+  deleteUser, 
+  updateUser, 
+  getUserId,
+  fetchSubscriptions
+};
