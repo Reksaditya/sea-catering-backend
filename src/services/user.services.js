@@ -8,7 +8,7 @@ async function createUser({ email, name, password, avatarUrl }) {
       email,
       name,
       password: hashedPassword,
-      avatarUrl
+      avatarUrl,
     },
   });
 }
@@ -22,6 +22,7 @@ async function findUserByEmail(email) {
       email: true,
       avatarUrl: true,
       password: true, 
+      role: true
     }
   });
 }

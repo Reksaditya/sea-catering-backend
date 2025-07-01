@@ -8,7 +8,7 @@ router.post("/register", registerUser);
 router.get("/", getAllUsers);
 router.get("/:id", auth, getUserId);
 router.patch("/", deleteUser);
-router.patch("/", auth, updateUser);
-router.get('/', auth, fetchSubscriptions);
+router.patch("/update/:id", updateUser);
+router.get("/", auth, fetchSubscriptions);
 
 module.exports = router;

@@ -25,7 +25,7 @@ async function loginUser(req, res) {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
@@ -33,7 +33,7 @@ async function loginUser(req, res) {
     const { password: _, ...safeUser } = user;
 
     res.status(200).json({
-      user: safeUser, 
+      user: safeUser,
       message: 'Login successful',
       token: token,
     });
@@ -83,10 +83,10 @@ async function deleteUser(req, res) {
 
 async function updateUser(req, res) {
   const userId = req.user.id; 
-  const { name, email, phone } = req.body;
+  const { name, email, phone, role } = req.body;
 
   try {
-    const user = await updateUserById(userId, { name, email, phone });
+    const user = await updateUserById(userId, { name, email, phone, role });
     res.json(user);
   } catch (err) {
     res.status(400).json({ error: 'Failed to update profile' });
