@@ -53,10 +53,33 @@ const calculateGrowth = async () => {
   });
 };
 
+const getAllSubscription = async () => {
+  return prisma.subscription.findMany({
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true
+        }
+      },
+      plan: {
+        select: {
+          name: true,
+          price: true
+        }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+};
+
 
 module.exports = {
   calculateNewSubscriptions,
   calculateMRR,
   calculateReactivations,
-  calculateGrowth
+  calculateGrowth,
+  getAllSubscription
 };

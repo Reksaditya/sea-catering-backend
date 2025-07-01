@@ -3,6 +3,7 @@ const {
   calculateMRR,
   calculateReactivations,
   calculateGrowth,
+  getAllSubscription
 } = require('../services/admin.services');
 
 const getAdminMetrics = async (req, res) => {
@@ -23,4 +24,14 @@ const getAdminMetrics = async (req, res) => {
   }
 };
 
-module.exports = { getAdminMetrics };
+const fetchAllSubcriptions = async (req, res) => {
+  try {
+    const subscriptions = await getAllSubscription();
+    res.json(subscriptions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch subscriptions' });
+  }
+}
+
+module.exports = { getAdminMetrics, fetchAllSubcriptions };
